@@ -1,0 +1,52 @@
+media:
+  input: posts
+  output: /posts
+  categories: [image]
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: posts
+    filename: index.md
+    view:
+      fields: [ title, date, draft ]
+    fields:
+      - { name: title, label: 标题, type: string, required: true }
+      - { name: draft, label: 草稿, type: boolean, default: true }
+      - name: date
+        label: 日期
+        type: date
+        options:
+          format: yyyy-MM-dd'T'HH:mm:ss+08:00
+          time: true
+      - name: categories
+        label: 分类
+        type: select
+        list: true
+        options:
+          values:
+            - 生活
+            - 瞬间
+            - 法律
+            - 技术
+            - 社会
+      - name: tags
+        label: 标签
+        type: string
+        list:
+          min: 1
+          max: 12
+      - name: imageupload
+        label: 上传照片区域
+        type: object
+        list: true
+        fields:
+          - name: addimage
+            label: 添加照片
+            type: image
+            options:
+              input: posts
+              output: /posts
+              categories: [image]
+      - { name: image, label: 特色图片地址, type: string, required: true }
+      - { name: body, label: 正文, type: rich-text }
