@@ -1,15 +1,23 @@
 media:
-  input: posts
-  output: /posts
-  categories: [image]
+  - name: uploads
+    label: 上传媒体
+    input: posts            # repo 下的 posts 文件夹（PagesCMS 会在此查找/上传图片）
+    output: /posts          # 写入 frontmatter / body 时使用的前缀路径（例如 /posts/xxx.jpg）
+    categories: [image]
+
 content:
   - name: posts
     label: 文章
     type: collection
-    path: posts
+    path: posts            # 你的文章根目录（仓库里看起来你有 posts 文件夹）
+    format: yaml-frontmatter   # 或 toml-frontmatter，按你仓库实际 frontmatter 选择
     filename: index.md
+    subfolders: true
     view:
       fields: [ title, date, draft ]
+      node:
+        filename: index.md
+        hideDirs: all
     fields:
       - { name: title, label: 标题, type: string, required: true }
       - { name: draft, label: 草稿, type: boolean, default: true }
@@ -24,29 +32,31 @@ content:
         type: select
         list: true
         options:
-          values:
-            - 生活
-            - 瞬间
-            - 法律
-            - 技术
-            - 社会
+          values: [ 生活, 瞬间, 法律, 技术, 社会 ]
       - name: tags
         label: 标签
         type: string
         list:
-          min: 1
+          min: 0
           max: 12
-      - name: imageupload
-        label: 上传照片区域
-        type: object
+      - name: featured
+        label: 特色图片
+        type: image
+        required: false
+        options:
+          media: uploads   # 指定使用上面定义的 media 名称（如果 pagesCMS 版本支持）
+          input: posts
+          output: /posts
+      - name: gallery
+        label: 正文图片（数组）
+        type: image
         list: true
-        fields:
-          - name: addimage
-            label: 添加照片
-            type: image
-            options:
-              input: posts
-              output: /posts
-              categories: [image]
-      - { name: image, label: 特色图片地址, type: string, required: true }
+        options:
+          media: uploads
+          input: posts
+          output: /posts
       - { name: body, label: 正文, type: rich-text }
+
+settings:
+  content:
+    merge: true
